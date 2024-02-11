@@ -1,8 +1,17 @@
 import mido
 import time
+import ins
+import win32api
+import win32con
+
+keymap = ins.WindsongLyre
 
 def delayus(t):
     start = time.time()
+
+def tap(key):
+    win32api.keybd_event(key, 0, 0, 0)
+    win32api.keybd_event(key, 0, win32con.KEYEVENTF_KEYUP, 0)
 
 mid=mido.MidiFile("test.mid")
 track0 = mido.MidiTrack(mid.tracks[0])
@@ -31,6 +40,14 @@ for msg in track0:
         elif md['type']=='end_of_track':
             break
         else:
+            print('不受支持的消息：')
             print(msg)
     else:
-        print(msg)
+        if md['note'] in keymap:
+            if md['type'] == 'note_on':
+                tap(keymap[md['note']])
+            elif md['type'] == 'note_off':
+                pass
+        else:
+            print('不受支持的音符：')
+            print(msg)
