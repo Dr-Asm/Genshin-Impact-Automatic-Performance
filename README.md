@@ -1,0 +1,2 @@
+# Genshin Impact Automatic Performance
+ 
